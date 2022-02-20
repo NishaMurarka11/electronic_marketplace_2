@@ -1,0 +1,19 @@
+version: "2"
+
+services:
+  myapp-grpc:
+    container_name: myapp-grpc
+    build:
+      dockerfile: Dockerfile
+      context: ./myapp
+    ports:
+      - "50051:50051"
+
+  myapp-redis:
+    container_name: myapp-redis
+    image: "redis:alpine"
+    command: redis-server --requirepass password
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    expose:
+      - 6379
