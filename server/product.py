@@ -4,13 +4,10 @@ import redis
 import json
 import pickle
 import traceback
+import grpc
+from database.myapp.src import database_pb2
+from database.myapp.src import database_pb2_grpc
 
-
-# r = redis.Redis(host='localhost', port=6379, db=1)
-
-# r.set('crack', 'code') # True
-# value = r.get('crack')
-# print(value) # b'world'
 
 class inventory():
     inv = None
@@ -25,12 +22,16 @@ class inventory():
             print("initializing the inventory")
             
             try:
-                inventory.__instance.redisDB = redis.Redis(host='localhost', port=6379)
-                if not inventory.__instance.redisDB.exists("productDB"):
-                    inventory.__instance.inv = {'items':[]}
-                    data = pickle.dumps(inventory.__instance.inv)
-                    inventory.__instance.redisDB.set("productDB", data)
-                print("initialized DB",pickle.loads(inventory.__instance.redisDB.get("productDB")))
+                with grpc.insecure_channel('localhost:50051') as channel:
+                    stub = database_pb2_grpc.redisOperationsStub(channel)
+                    data = database_pb2.Request(message="productDB")
+                    response = stub.exists(data)
+                    if response.message == "0":
+                        inventory.__instance.inv = {'items':[]}
+                        pickled_data = pickle.dumps(inventory.__instance.inv)
+                        set_data = database_pb2.Request(message="productDB",val=pickled_data)
+                        response = stub.set(set_data)
+                    print("initialized DB",pickle.loads(stub.get(data).message))
             except Exception as e:
                 print("Error in ProductDB",e)
         return inventory.__instance

@@ -44,7 +44,7 @@ def setup():
             'grpcio==1.33.1',
             'redis==3.5.3',
             'google-api-python-client==1.12.5',
-            'protobuf==3.12.0'
+            'protobuf'
         ]
     )
 

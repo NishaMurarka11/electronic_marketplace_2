@@ -10,6 +10,9 @@ import jsonpickle
 
 app = Flask(__name__)
 class client_server():
+
+
+# Validate buyer ID before cart api calls. 
     
     def __init__(self):
         host='127.0.0.1'

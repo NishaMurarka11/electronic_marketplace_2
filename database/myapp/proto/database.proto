@@ -3,6 +3,7 @@ package redisDatabase;
 
 message Request {
   string message = 1;
+  optional string val = 2;
 }
 
 message Reply {
