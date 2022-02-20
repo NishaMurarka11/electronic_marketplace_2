@@ -16,6 +16,6 @@ class Server(database_pb2_grpc.redisOperationsServicer):
        print('finished the termination', flush=True)
 
 
-# if __name__ == '__main__':
-def main():
-    Server.run()
+if __name__ == '__main__':
+#def main():
+    Server.serve()

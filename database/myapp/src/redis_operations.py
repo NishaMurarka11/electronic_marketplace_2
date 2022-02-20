@@ -9,10 +9,9 @@ class RedisOperations(database_pb2_grpc.redisOperationsServicer):
     
     def __init__(self):
         self.redis_client = redis.Redis(
-            host='myapp-redis',
+            host='127.0.0.1',
             port=6379,
             db=0,
-            password='password',
             socket_timeout=None
         )
     
@@ -21,18 +20,19 @@ class RedisOperations(database_pb2_grpc.redisOperationsServicer):
         key = request.message
         val =  self.redis_client.exists(key)
         print(f'received request: {request} with context {context}', flush=True)
-        return redisDatabase_pb2.Reply(message=val)
+        return database_pb2.Reply(message=str(val))
     
     def get(self, request, context):
         print(request.message, flush=True)
         key = request.message
         val = self.redis_client.get(key)
         print(f'received request: {request} with context {context}', flush=True)
-        return redisDatabase_pb2.Reply(message=val)
+        return database_pb2.Reply(message=str(val))
     
     def set(self, request, context):
         print(request.message, flush=True)
         key = request.message
-        val = self.redis_client.set(key)
+        val = request.val 
+        val = self.redis_client.set(key,val)
         print(f'received request: {request} with context {context}', flush=True)
-        return redisDatabase_pb2.Reply(message=val)
+        return database_pb2.Reply(message=str(val))
