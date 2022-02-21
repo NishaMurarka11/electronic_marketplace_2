@@ -1,13 +1,8 @@
 #!/usr/bin/python3
-from ast import Pass
-import redis
 import json
 import pickle
 import traceback
-import grpc
-from database.myapp.src import database_pb2
-from database.myapp.src import database_pb2_grpc
-
+import grpc_client
 
 class inventory():
     inv = None

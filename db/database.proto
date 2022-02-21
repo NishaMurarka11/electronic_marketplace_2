@@ -14,4 +14,5 @@ service redisOperations {
   rpc get (Request) returns (Reply) {}
   rpc set (Request) returns (Reply) {}
   rpc exists (Request) returns (Reply) {}
+  rpc delete (Request) returns (Reply) {}
 }

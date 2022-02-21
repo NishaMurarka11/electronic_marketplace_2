@@ -36,3 +36,10 @@ class RedisOperations(database_pb2_grpc.redisOperationsServicer):
         val = self.redis_client.set(key,val)
         print(f'received request: {request} with context {context}', flush=True)
         return database_pb2.Reply(message=str(val))
+    
+    def delete(self, request, context):
+        print(request.message, flush=True)
+        key = request.message
+        val = self.redis_client.delete(key)
+        print(f'received request: {request} with context {context}', flush=True)
+        return database_pb2.Reply(message=str(val))
