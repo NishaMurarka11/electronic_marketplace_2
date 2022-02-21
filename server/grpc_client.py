@@ -1,7 +1,7 @@
 import grpc
 import database_pb2
 import database_pb2_grpc
-
+import traceback
 
 class GRPCClient():
     
@@ -22,8 +22,9 @@ class GRPCClient():
                 stub = database_pb2_grpc.redisOperationsStub(channel)
                 data = database_pb2.Request(message=key,val=value)
                 response = stub.set(data)
-                return response.message        
+                return response.message    
         except Exception as e:
+            traceback.print_exc()
             return ("Error has occured "+str(e))
         
     def get(key):

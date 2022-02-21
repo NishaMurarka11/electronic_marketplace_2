@@ -1,11 +1,13 @@
 #!/usr/bin/python3
 from flask import Flask, request, Response
 from product import inventory
-import requests
 import json
 import pickle
 import jsonpickle
+from user_database_login import user
 
+error_code = -1
+success_code = 1
 app = Flask(__name__)
 class seller_server:
     
@@ -19,17 +21,18 @@ class seller_server:
         data = request.get_json()
         username = data['user_name']
         password = data['password']
-        response = {'response' : 123}
+        user_id,msg = user.create_user(username, password)
+        response = {'seller_id' : user_id, 'message' : msg}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
     
-    @app.route('/api/Login',methods=['POST'])
+    @app.route('/api/login',methods=['POST'])
     def login():
         data = request.get_json()
         username = data['user_name']
         password = data['password']
-        # Check if username and password exists 
-        response = {'response' : "logged in"}
+        user_id,msg = user.login_user(username,password)
+        response = {'seller_id' : user_id, 'message' : msg}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
     
@@ -38,9 +41,12 @@ class seller_server:
         data = request.get_json()
         seller_id = data['seller_id']
         item = data['item']
-        product_db = inventory.get_db_instance()
-        val = product_db.put_item(item,seller_id)
-        response = { 'response': val }
+        if user.validate_user(seller_id):
+            product_db = inventory()
+            ret_code,result = product_db.put_item(item,seller_id)
+            response = {'return_code' : ret_code,'message' : result}
+        else :
+            response = {'return_code' : error_code, 'message' : "Invalid Seller Id"}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
     
@@ -50,9 +56,12 @@ class seller_server:
         seller_id = data['seller_id']
         item_id = data['item_id']
         price = data['price']
-        product_db = inventory.get_db_instance()
-        val =  product_db.update_item(item_id,key='sale_price',value=price)  
-        response = { 'response': val }
+        if user.validate_user(seller_id):
+            product_db = inventory()
+            ret_code,result =  product_db.update_item(item_id,key='sale_price',value=price)  
+            response = {'return_code' : ret_code,'message' : result}
+        else :
+            response = {'return_code' : error_code, 'message' : "Invalid Seller Id"}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
         
@@ -62,9 +71,12 @@ class seller_server:
         seller_id = data['seller_id']
         item_id = data['item_id']
         quantity = data['quantity']
-        product_db = inventory.get_db_instance()
-        val =  product_db.update_item(item_id,key='quantity',value=quantity)
-        response = { 'response': val }
+        if user.validate_user(seller_id):
+            product_db = inventory()
+            ret_code,result =  product_db.update_item(item_id,key='quantity',value=quantity)
+            response = {'return_code' : ret_code,'message' : result}
+        else :
+            response = {'return_code' : error_code, 'message' : "Invalid Seller Id"}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
     
@@ -73,9 +85,12 @@ class seller_server:
         data = request.get_json()
         print("Here okay")
         seller_id = data['seller_id']
-        product_db = inventory.get_db_instance()
-        item_list = product_db.get_item_by_seller_id(seller_id)
-        response = { 'response' : item_list}
+        if user.validate_user(seller_id):
+            product_db = inventory()
+            ret_code,result = product_db.get_item_by_seller_id(seller_id)
+            response = {'return_code' : ret_code,'message' : result}
+        else :
+            response = {'return_code' : error_code, 'message' : "Invalid Seller Id"}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
     
@@ -84,14 +99,16 @@ class seller_server:
         product_db = inventory.get_db_instance()
         redisDB = product_db.redisDB
         val = pickle.loads(product_db.redisDB.get("productDB"))
-        #print(val)
         response = { 'response' : val}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
         
     @app.route('/api/logout', methods=['GET'])
     def logout():
-        response = { 'response' : "OK"}
+        data = request.get_json()
+        seller_id = data["seller_id"]
+        user_id,msg = user.logout(seller_id)
+        response = {'seller_id' : user_id, 'message' : msg}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
   

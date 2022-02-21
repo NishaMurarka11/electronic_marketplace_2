@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x64\x61tabase.proto\x12\rredisDatabase\"4\n\x07Request\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x10\n\x03val\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x06\n\x04_val\"\x18\n\x05Reply\x12\x0f\n\x07message\x18\x01 \x01(\t2\xb9\x01\n\x0fredisOperations\x12\x35\n\x03get\x12\x16.redisDatabase.Request\x1a\x14.redisDatabase.Reply\"\x00\x12\x35\n\x03set\x12\x16.redisDatabase.Request\x1a\x14.redisDatabase.Reply\"\x00\x12\x38\n\x06\x65xists\x12\x16.redisDatabase.Request\x1a\x14.redisDatabase.Reply\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0e\x64\x61tabase.proto\x12\rredisDatabase\"4\n\x07Request\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x10\n\x03val\x18\x02 \x01(\tH\x00\x88\x01\x01\x42\x06\n\x04_val\"\x18\n\x05Reply\x12\x0f\n\x07message\x18\x01 \x01(\t2\xf3\x01\n\x0fredisOperations\x12\x35\n\x03get\x12\x16.redisDatabase.Request\x1a\x14.redisDatabase.Reply\"\x00\x12\x35\n\x03set\x12\x16.redisDatabase.Request\x1a\x14.redisDatabase.Reply\"\x00\x12\x38\n\x06\x65xists\x12\x16.redisDatabase.Request\x1a\x14.redisDatabase.Reply\"\x00\x12\x38\n\x06\x64\x65lete\x12\x16.redisDatabase.Request\x1a\x14.redisDatabase.Reply\"\x00\x62\x06proto3')
 
 
 
@@ -43,5 +43,5 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _REPLY._serialized_start=87
   _REPLY._serialized_end=111
   _REDISOPERATIONS._serialized_start=114
-  _REDISOPERATIONS._serialized_end=299
+  _REDISOPERATIONS._serialized_end=357
 # @@protoc_insertion_point(module_scope)

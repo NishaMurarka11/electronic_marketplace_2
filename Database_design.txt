@@ -24,3 +24,13 @@ Buyer Database = {"buyer": [{ "buyer_name" :
 Shopping cart = { "buyer_id" : {item1:Quantity, item2:Quantity},
 }
 
+username : [ password , user_id ]
+username : [ ]
+user_id : 1  
+
+What All I need from redis - 
+
+exists 
+set 
+get
+

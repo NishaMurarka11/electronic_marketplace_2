@@ -29,6 +29,11 @@ class redisOperationsStub(object):
                 request_serializer=database__pb2.Request.SerializeToString,
                 response_deserializer=database__pb2.Reply.FromString,
                 )
+        self.delete = channel.unary_unary(
+                '/redisDatabase.redisOperations/delete',
+                request_serializer=database__pb2.Request.SerializeToString,
+                response_deserializer=database__pb2.Reply.FromString,
+                )
 
 
 class redisOperationsServicer(object):
@@ -52,6 +57,12 @@ class redisOperationsServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def delete(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_redisOperationsServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -67,6 +78,11 @@ def add_redisOperationsServicer_to_server(servicer, server):
             ),
             'exists': grpc.unary_unary_rpc_method_handler(
                     servicer.exists,
+                    request_deserializer=database__pb2.Request.FromString,
+                    response_serializer=database__pb2.Reply.SerializeToString,
+            ),
+            'delete': grpc.unary_unary_rpc_method_handler(
+                    servicer.delete,
                     request_deserializer=database__pb2.Request.FromString,
                     response_serializer=database__pb2.Reply.SerializeToString,
             ),
@@ -126,6 +142,23 @@ class redisOperations(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/redisDatabase.redisOperations/exists',
+            database__pb2.Request.SerializeToString,
+            database__pb2.Reply.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def delete(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/redisDatabase.redisOperations/delete',
             database__pb2.Request.SerializeToString,
             database__pb2.Reply.FromString,
             options, channel_credentials,

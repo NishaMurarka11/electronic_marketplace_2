@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import imp
 from unittest import result
 from flask import Flask, request, Response
 from product import inventory
@@ -7,12 +8,12 @@ import socket
 import json
 import pickle
 import jsonpickle
+from user_database_login import user
 
+error_code = -1
+success_code = 1
 app = Flask(__name__)
 class client_server():
-
-
-# Validate buyer ID before cart api calls. 
     
     def __init__(self):
         host='127.0.0.1'
@@ -24,17 +25,18 @@ class client_server():
         data = request.get_json()
         username = data['user_name']
         password = data['password']
-        response = {'response' : 123}
+        user_id,msg = user.create_user(username, password)
+        response = {'buyer_id' : user_id, 'message' : msg}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
     
-    @app.route('/api/Login',methods=['POST'])
+    @app.route('/api/login',methods=['POST'])
     def login():
         data = request.get_json()
         username = data['user_name']
         password = data['password']
-        # Check if username and password exists 
-        response = {'response' : "logged in"}
+        user_id,msg = user.login_user(username,password)
+        response = {'buyer_id' : user_id, 'message' : msg}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
     
@@ -55,9 +57,12 @@ class client_server():
         buyer_id = data['buyer_id']
         item_id = data['item_id']
         quantity = data['quantity']
-        cart = shopping_cart.get_db_instance()
-        result =  cart.add_item(buyer_id,item_id,quantity)
-        response = {'response' : result}
+        if user.validate_user(buyer_id):
+            cart = shopping_cart.get_db_instance()
+            ret_code,result =  cart.add_item(buyer_id,item_id,quantity)
+            response = {'return_code' : ret_code,'message' : result}
+        else :
+            response = {'return_code' : error_code, 'message' : "Invalid Buyer Id"}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
         
@@ -68,9 +73,12 @@ class client_server():
         buyer_id = data['buyer_id']
         item_id = data['item_id']
         quantity = data['quantity']
-        cart = shopping_cart.get_db_instance()
-        result = cart.remove_item(buyer_id,item_id,quantity)
-        response = {'response' : result}
+        if user.validate_user(buyer_id):
+            cart = shopping_cart.get_db_instance()
+            ret_code,result = cart.remove_item(buyer_id,item_id,quantity)
+            response = {'return_code' : ret_code,'message' : result}
+        else :
+            response = {'return_code' : error_code, 'message' : "Invalid Buyer Id"}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
     
@@ -78,9 +86,12 @@ class client_server():
     def clear_cart():
         data = request.get_json()
         buyer_id = data['buyer_id']
-        cart = shopping_cart.get_db_instance()
-        result =  cart.clear_cart(buyer_id)
-        response = {'response' : result}
+        if user.validate_user(buyer_id):
+            cart = shopping_cart.get_db_instance()
+            ret_code,result =  cart.clear_cart(buyer_id)
+            response = {'return_code' : ret_code,'message' : result}
+        else :
+            response = {'return_code' : error_code, 'message' : "Invalid Buyer Id"}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
     
@@ -88,9 +99,12 @@ class client_server():
     def display_cart():
         data = request.get_json()
         buyer_id = data['buyer_id']
-        cart = shopping_cart.get_db_instance()
-        result = cart.display_cart(buyer_id)
-        response = {'response' : result}
+        if user.validate_user(buyer_id):
+            cart = shopping_cart.get_db_instance()
+            ret_code,result = cart.display_cart(buyer_id)
+            response = {'return_code' : ret_code,'message' : result}
+        else :
+            response = {'return_code' : error_code, 'message' : "Invalid Buyer Id"}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")    
     
@@ -105,7 +119,10 @@ class client_server():
         
     @app.route('/api/logout', methods=['GET'])
     def logout():
-        response = { 'response' : "OK"}
+        data = request.get_json()
+        buyer_id = data["buyer_id"]
+        user_id,msg = user.logout(buyer_id)
+        response = {'buyer_id' : user_id, 'message' : msg}
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
 

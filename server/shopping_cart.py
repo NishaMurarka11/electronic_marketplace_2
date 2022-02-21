@@ -1,6 +1,7 @@
 #!/usr/bin/python3
-from ast import Pass
 
+success_code = 1
+error_code = -1
 class shopping_cart():
     cart = None
     __instance = None
@@ -21,36 +22,48 @@ class shopping_cart():
         print("Shopping cart called")
     
     def add_item(self,buyer_id,item_id,quantity):
-        if buyer_id in self.cart:
-            item_dict = self.cart[buyer_id]
-            item_dict[item_id] = quantity
-        else:
-            self.cart[buyer_id] = {item_id:quantity}
-        return "Added item to cart"
+        try :
+            if buyer_id in self.cart:
+                item_dict = self.cart[buyer_id]
+                item_dict[item_id] = quantity
+            else:
+                self.cart[buyer_id] = {item_id:quantity}
+            return (success_code,"Added item to cart")
+        except Exception as e:
+            return (error_code,str(e))
         
     def remove_item(self,buyer_id,item_id,quantity):
-        print("Remove item function called")
-        if buyer_id in self.cart:
-            item_dict = self.cart[buyer_id]
-            item_dict[item_id] = quantity
-        else:
-            self.cart[buyer_id] = {item_id:quantity}
-        return "Removed item from cart"
+        try:
+            print("Remove item function called")
+            if buyer_id in self.cart:
+                item_dict = self.cart[buyer_id]
+                item_dict[item_id] = quantity
+            else:
+                self.cart[buyer_id] = {item_id:quantity}
+            return (success_code,"Removed item from cart")
+        except Exception as e:
+            return (error_code,str(e))
     
     def clear_cart(self,buyer_id):
-        print("Clear cart function called")
-        if buyer_id in self.cart:
-            del self.cart[buyer_id]
-            return "cleared cart"
-        else:
-            return "cart is empty"
+        try:
+            print("Clear cart function called")
+            if buyer_id in self.cart:
+                del self.cart[buyer_id]
+                return (success_code,"cleared cart")
+            else:
+                return (success_code,"cart is empty")
+        except Exception as e:
+            return (error_code,str(e))
     
     def display_cart(self,buyer_id):
-        print("Display cart function called")
-        if buyer_id in self.cart:
-            return self.cart[buyer_id]
-        else:
-            return "empty cart"
+        try:
+            print("Display cart function called")
+            if buyer_id in self.cart:
+                return (success_code,self.cart[buyer_id])
+            else:
+                return (success_code,"empty cart")
+        except Exception as e:
+            return (error_code,str(e))
     
 
     
