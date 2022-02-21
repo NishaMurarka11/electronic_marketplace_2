@@ -34,7 +34,6 @@ class RedisOperations(database_pb2_grpc.redisOperationsServicer):
         print(request.message, flush=True)
         key = request.message
         val = self.redis_client.get(key)
-        
         print(f'received request: {request} with context {context}', flush=True)
         return database_pb2.Reply(message=str(val.decode('utf-8')))
     
@@ -48,6 +47,7 @@ class RedisOperations(database_pb2_grpc.redisOperationsServicer):
         return database_pb2.Reply(message=str(val))
     
     def delete(self, request, context):
+        print("Delete called ", flush=True)
         print(request.message, flush=True)
         key = request.message
         val = self.redis_client.delete(key)

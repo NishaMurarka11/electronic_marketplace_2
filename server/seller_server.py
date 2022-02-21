@@ -83,7 +83,6 @@ class seller_server:
     @app.route('/api/displayItem', methods=['GET'])    
     def display_item():
         data = request.get_json()
-        print("Here okay")
         seller_id = data['seller_id']
         if user.validate_user(seller_id):
             product_db = inventory()

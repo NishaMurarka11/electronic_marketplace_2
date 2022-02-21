@@ -59,11 +59,12 @@ def call_seller_sever(data,operation,url):
     headers = {'content-type': 'application/json'}
     if operation == "post":
         response = requests.post(url, data=data,headers=headers)
-        print(str(response))
+        print("Response code "+ str(response))
         return json.loads(response.text)
     else:
         response = requests.get(url, data=data,headers=headers)
-        return json.loads(data)
+        print("Response code "+ str(response))
+        return json.loads(response.text)
     
 def main():
     
@@ -77,7 +78,6 @@ def main():
         {"name":"Pencil","category_id":0,"keywords":["pencil","stationary","ink","pencil","school supplies"],"condition":"new","sale_price":1,'quantity':10}]
     
     #response = put_item(seller_id,item)
-
    
     #update_price(seller_id,1,2)
 
@@ -85,7 +85,9 @@ def main():
 
     #printProductDB()
 
-    display_item(seller_id)
+    #display_item(seller_id)
+    
+    logout(seller_id)
 
   
 if __name__=="__main__":

@@ -42,7 +42,7 @@ class GRPCClient():
             with grpc.insecure_channel('localhost:50051') as channel:
                 stub = database_pb2_grpc.redisOperationsStub(channel)
                 data = database_pb2.Request(message=key)
-                response = stub.get(data)
+                response = stub.delete(data)
                 return response.message        
         except Exception as e:
             return ("Error has occured "+str(e))

@@ -45,7 +45,7 @@ class client_server():
         data = request.get_json()
         category_id = data['category_id']
         keywords = data['keywords']
-        product_db = inventory.get_db_instance()
+        product_db = inventory()
         result = product_db.search_item(category_id,keywords)
         response = {'response' : result}
         response_pickled = jsonpickle.encode(response)

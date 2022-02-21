@@ -124,6 +124,7 @@ class inventory():
         # item_lst = self.inv["items"]
         for item in item_lst:
             if item["seller_id"] == seller_id :
+                #print("Item found "+str(item))
                 item_by_seller.append(item)
         return (SUCCESS_CODE,item_by_seller)
 

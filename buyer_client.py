@@ -26,7 +26,7 @@ def login_user(username,password):
     return response
 
 def search_item(category_id,keywords):
-    print("\nBuyer Client :: /Search Items")
+    print("\n Buyer Client :: Search Items")
     data = {'category_id':category_id,'keywords':keywords}
     url = addr+"/api/searchItem"
     response = call_buyer_sever(data,"get",url)
@@ -61,8 +61,8 @@ def display_all_items():
     url = addr+"/api/printDB"
     return call_buyer_sever(data,"get",url)
 
-def logout(seller_id):
-    data = {'seller_id':seller_id}
+def logout(buyer_id):
+    data = {'buyer_id':buyer_id}
     url = addr+"/api/logout"
     print(call_buyer_sever(data,"get",url))
 
@@ -71,26 +71,27 @@ def call_buyer_sever(data,operation,url):
     headers = {'content-type': 'application/json'}
     if operation == "post":
         response = requests.post(url, data=data,headers=headers)
-        return json.loads(data)
     else:
         response = requests.get(url, data=data,headers=headers)
-        return json.loads(data)
+    print("Response code "+ str(response))
+    return json.loads(response.text)
 
 def main():
-    # display_all_items()
-    response = create_user("sachin","test")
+    #response = create_user("sachin","test")
     response = login_user("sachin","test")
     
     buyer_id = response['buyer_id']
-    items = search_item(0,["stationary","Pen"])
+    # items = search_item(0,["stationary","Pen"])
     
-    print(add_item(buyer_id,0,"3"))
+    # print(add_item(buyer_id,0,"3"))
 
-    print(remove_item(buyer_id,0,"2"))
+    # print(remove_item(buyer_id,0,"2"))
 
-    print(display_cart(buyer_id))
+    # print(display_cart(buyer_id))
 
-    print(clear_cart(buyer_id))
+    # print(clear_cart(buyer_id))
+    
+    print(logout(buyer_id))
 
 
 if __name__=="__main__":
