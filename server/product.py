@@ -3,15 +3,12 @@ import json
 import pickle
 import traceback
 import grpc_client
+from grpc_client import GRPCClient
+
 
 class inventory():
-    inv = None
-    __instance = None
-    item_id = 0
-    redisDB=None
-    
-    @staticmethod
-    def get_db_instance():
+    # @staticmethod
+    # def get_db_instance():
         if inventory.__instance == None:
             inventory()
             print("initializing the inventory")
@@ -30,37 +27,41 @@ class inventory():
             except Exception as e:
                 print("Error in ProductDB",e)
         return inventory.__instance
-    
+    SUCCESS_CODE = 1
+    ERROR_CODE = -1
     def __init__(self) -> None:
-        if inventory.__instance != None:
-            raise Exception("This is a singleton class")
-        else:
-            inventory.__instance = self
+        pass
+        
+
+    def initializeDB(self):
+
+        response = GRPCClient.exists("productDB")
+        if(response.message== "0"):
+            data_instance = {'items':[]}
+            pickled_data = pickle.dumps(data_instance)
+            GRPCClient.set("productDB",pickled_data)
+            print("initialized DB",pickle.loads(GRPCClient.get(data).message))
+
     
-    def get_item_id(self):
-        print("get item called")
-        val = self.item_id
-        self.item_id = val + 1
-        return val
-    
+
     def put_item(self, items,seller_id):
         print("\nPut item function called for items {}".format(items))
-        #generate ID
-        #Keep number for each category
+        self.initializeDB()
+        
         # check if item is already there. 
         item_ids = []
-        data = pickle.loads(inventory.__instance.redisDB.get("productDB"))
+        data  =  GRPCClient.get("productDB")
+        # data = pickle.loads(inventory.__instance.redisDB.get("productDB"))
         print("\nCurrent State of DB {}".format(data))
         try:
             for item in items:
                 flag = 0
                 item["seller_id"] = seller_id
-                # result = self.redisDB.hgetall("productDB")
-                # result = json.loads(self.redisDB.hgetall("productDB"))
-                # self.inv = result
+        
                 item_lst = data["items"]
                 print("Item List : ",item_lst)
-                # item_lst = self.inv["items"]
+                
+
                 #Check if the item already exists. If yes update the item. 
                 for db_item in item_lst:
                     if item["name"] == db_item["name"] and \
@@ -81,16 +82,18 @@ class inventory():
                     item_lst.append(item)
         except Exception as err:
             traceback.print_exc()
+            return (ERROR_CODE, str(err))
 
         data['items'] = item_lst
-        self.redisDB.set("productDB",  pickle.dumps(data))
-        return (item_ids)
+        GRPCClient.set("productDB",  pickle.dumps(data))
+        return (SUCCESS_CODE,item_ids)
+
+
     
     def search_item(self,category_id,keyword):
-        data = pickle.loads(inventory.__instance.redisDB.get("productDB"))
+        self.initializeDB()
+        data = GRPCClient.get("productDB")
         item_lst = data["items"]
-        print("Inside Repository")
-        # item_lst = self.inv["items"]
         print("ITEM LIST",item_lst)
         search_items = []
         try:
@@ -104,17 +107,19 @@ class inventory():
                             break
         except Exception as e:
             traceback.print_exc()
+            return (ERROR_CODE, str(err))
         print("Item found {}".format(search_items))
         return search_items
+
+
         
     def update_item(self,item_id,key,value):
+        self.initializeDB()
         print("Update Item")
-        print("REDIS ",inventory.__instance.redisDB.get("productDB"))
-        data = pickle.loads(inventory.__instance.redisDB.get("productDB"))
+        data = pickle.loads(GRPCClient.get("productDB"))
         print("data",data)
         item_lst = data['items']
         print("*****DB before update", item_lst)
-        # item_lst = self.inv["items"]
         flag = 0
         for item in item_lst:
             if item["item_id"] == item_id:
@@ -122,23 +127,24 @@ class inventory():
                 flag = 1
                 break
         if flag == 1:
-            # self.inv["items"] = item_lst
             data["items"] = item_lst
-            inventory.__instance.redisDB.set("productDB", pickle.dumps(data))
+            GRPCClient.set("productDB", pickle.dumps(data))
             print("****DB After update", item_lst)
-            return "Updated "+str(item_id)+" "+str(key)+" to "+str(value)
+            ret = "Updated "+str(item_id)+" "+str(key)+" to "+str(value)
+            return (SUCCESS_CODE,ret)
         else: 
             return "No such item item found."
         
         
     def get_item_by_seller_id(self,seller_id):
-        data = pickle.loads(inventory.__instance.redisDB.get("productDB"))
+
+        data = pickle.loads(GRPCClient.get("productDB"))
         item_lst = data["items"]
         item_by_seller = []
         # item_lst = self.inv["items"]
         for item in item_lst:
             if item["seller_id"] == seller_id :
                 item_by_seller.append(item)
-        return item_by_seller
+        return (SUCCESS_CODE,item_by_seller)
 
     
