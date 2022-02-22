@@ -67,3 +67,16 @@ login_user seller API TAT 53.479192 ms
 
 logout seller API TAT  42.2342 ms
 
+
+WORKING COMPONENTS:
+
+### Solar System Exploration, 1950s – 1960s
+- [x] Create an account: sets up username and password 
+- [x] Login: provide username and password 
+- [x] Logout 
+- [x] Get seller rating 
+- [x] Put an item for sale: provide all item characteristics and quantity 
+- [x] Change the sale price of an item: provide item id and new sale price 
+- [x] Remove an item from sale: provide item id and quantity 
+- [x] Display items currently on sale put up by this seller
+
