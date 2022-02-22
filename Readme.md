@@ -1,24 +1,22 @@
 System Design:
 
-
-<img width="637" alt="Screen Shot 2022-02-21 at 8 32 43 PM" src="https://user-images.githubusercontent.com/26001477/155058256-cc21aaa4-1679-4239-8849-e03310352b93.png">
+<img width="611" alt="Screen Shot 2022-02-21 at 8 36 09 PM" src="https://user-images.githubusercontent.com/26001477/155058564-629b43a2-9b9e-4303-9fd2-5aaa85f18f77.png">
 
 
 The application consists of 6 components:
 
-1. Seller side Server Interface -  The seller server, using socket running on port 1200, which accepts all incoming connections. The server side is also implementing all the API business logic and interaction with the Redis DB. The seller identifies different API requests using parameters in the Request. Using a "operation" field in the request, and adapter rooutes the request to respective API, replicating a dispatcher servlet in RestApi Framework.
-
-2. Seller side Client Interface - Seller Client is a replication of the frontend that interacts with the seller server. The main functions calls api and the socket application connects to  seller server socket using SOCK_STREAM 
-
-3. Buyer side Server Interface - The buyer server, using socket running on port 1500, which accepts all incoming connections. The server side is also implementing all the API business logic and interaction with the cart DB, which is singleton class. The buyer identifies different API requests using parameters in the Request. Using a "operation" field in the request, and adapter rooutes the request to respective API, replicating a dispatcher servlet in RestApi Framework.
-
-4. Buyer side Client Interface - Buyer Client is a replication of the frontend that interacts with the buyer server. The main functions calls api and the socket application connects to  seller server socket using SOCK_STREAM. It is used to search items from product Db and manipulate the Cart Db.
-
-5. Redis DB as product database - storing items as key value pair. The data is Utf-8 encoded.
-
-6. Singleton class as user cart -  This ensures that Buyer server can only instantiate the cart data bases once per userId and the data doesnot get reset in subsequent client API calls.
+1. Seller side Server Interface -  The seller server interface is running on google cloud and is acting as Rest server for the seller client. We have used python flask to implement the rest server
 
 
+2. Seller side Client Interface - Seller Client is a replication of the frontend that interacts with the seller server. It talks to the seller server via rest api calls. 
+
+3. Buyer side Server Interface - The Buyer server interface is running on google cloud and is acting as Rest server for the buyer client. We have used python flask to implement the rest server. 
+
+4. Buyer side Client Interface - Buyer Client is a replication of the frontend that interacts with the buyer server. It talks to the buyer server via rest api calls. 
+
+5. Customer GRPC server -  We have a Customer GRPC server which is acting as a point of contact for all our customer related queries like login, logout, create username password. Internally the GRPC server uses Redis to persist the data/
+
+6. Product GRPC server: We have a product GRPC server which is acting as a point of contact for all our product related queries like search items, put item, update item
 
 
 Round-Trip Latency Numbers.
