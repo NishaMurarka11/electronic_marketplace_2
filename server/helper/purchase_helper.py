@@ -34,6 +34,7 @@ class PurchaseHelper():
 
 
 	def make_payment(data):
+		url = "http://localhost:8080/ws"
 		print("Data",data)
 		return "TRUE"
 
