@@ -33,7 +33,7 @@ def search_item(category_id,keywords):
     print("\nSearch Item RESPONSE",response)
     return response
     
-def add_item(buyer_id,item_id,quantity):
+def add_item_to_cart(buyer_id,item_id,quantity):
     data = {'buyer_id':buyer_id,'item_id':item_id,'quantity':quantity}
     url = addr+"/api/addItem"
     return call_buyer_sever(data,"post",url)
@@ -56,6 +56,25 @@ def display_cart(buyer_id):
     url = addr+"/api/displayCart"
     return call_buyer_sever(data,"get",url)
 
+def make_purchase(buyer_id,data):
+    print("making purchase for buyer_id",buyer_id)
+    data = {'buyer_id':buyer_id, 'data':data}
+    url = addr+"/api/makePurchase"
+    return call_buyer_sever(data,"post",url)
+
+def get_items_for_feedback(buyer_id):
+    print("Getting Items for feedback",buyer_id)
+    data = {'buyer_id':buyer_id}
+    url = addr+"/api/getItemsForFeedback"
+    return call_buyer_sever(data,"post",url)
+
+def post_feedback(buyer_id,item_id,feedback):
+    print("Post feedback by {} for item_Id {} with feedback {}".format(buyer_id,item_id,feedback))
+    data = {'buyer_id':buyer_id, "item_id": item_id, "feedback": feedback}
+    url = addr+"/api/postFeedback"
+    return call_buyer_sever(data,"post",url)
+
+
 def display_all_items():
     data = {'operation':'display_all_items'}
     url = addr+"/api/printDB"
@@ -76,14 +95,24 @@ def call_buyer_sever(data,operation,url):
     print("Response code "+ str(response))
     return json.loads(response.text)
 
+
+
+"""
+Inside main we have defined several test cases for testing out several buyer test cases
+
+"""
 def main():
-    #response = create_user("sachin","test")
+
+    # response = create_user("sachin","test")
     response = login_user("sachin","test")
     
-    buyer_id = response['buyer_id']
+    # buyer_id = response['buyer_id']
     # items = search_item(0,["stationary","Pen"])
     
-    # print(add_item(buyer_id,0,"3"))
+    # print(add_item_to_cart(buyer_id,0,"1"))
+    # data  = {'buyer_id':buyer_id,'Name':'sachin','card_number':'4032678965432201' , 'expiration_date':'02022025'}
+    # make_purchase(buyer_id,data)
+
 
     # print(remove_item(buyer_id,0,"2"))
 
@@ -91,7 +120,7 @@ def main():
 
     # print(clear_cart(buyer_id))
     
-    print(logout(buyer_id))
+    #print(logout(buyer_id))
 
 
 if __name__=="__main__":
