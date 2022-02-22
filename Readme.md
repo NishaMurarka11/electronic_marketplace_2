@@ -1,5 +1,9 @@
 System Design:
 
+
+<img width="637" alt="Screen Shot 2022-02-21 at 8 32 43 PM" src="https://user-images.githubusercontent.com/26001477/155058256-cc21aaa4-1679-4239-8849-e03310352b93.png">
+
+
 The application consists of 6 components:
 
 1. Seller side Server Interface -  The seller server, using socket running on port 1200, which accepts all incoming connections. The server side is also implementing all the API business logic and interaction with the Redis DB. The seller identifies different API requests using parameters in the Request. Using a "operation" field in the request, and adapter rooutes the request to respective API, replicating a dispatcher servlet in RestApi Framework.
