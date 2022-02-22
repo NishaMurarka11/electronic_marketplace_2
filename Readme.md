@@ -16,30 +16,51 @@ The application consists of 6 components:
 
 5. Customer GRPC server -  We have a Customer GRPC server which is acting as a point of contact for all our customer related queries like login, logout, create username password. Internally the GRPC server uses Redis to persist the data/
 
-6. Product GRPC server: We have a product GRPC server which is acting as a point of contact for all our product related queries like search items, put item, update item
+6. Product GRPC server: We have a product GRPC server which is acting as a point of contact for all our product related queries like search items, put item, update item, purchase item, update feedback.etc
 
 
 Round-Trip Latency Numbers.
 
-<!-- Buyer Client-Server integrations round-trip latency numbers -->
+<!-- Buyer Client-Server integrations round-trip latency numbers when client is in local Machine and Server is in GCP in Milliseconds -->
 
-Search API TAT 9.955124999999999
+Search API TAT 2.952381 ms
 
-Add Item API TAT 0.2502919999999992
+Add Item API TAT 2.925082 ms
 
-Remove Items API TAT 0.21408299999999686
+Remove Items API TAT 4.999912 ms
 
-Display Cart API TAT 0.15849999999999892
+Display Cart API TAT 4.99990 ms
+
+create_user API TAT  2.988912 ms
+
+login_user API TAT 2.9999812 ms
+
+make_purchase API TAT 3.1278 ms
+
+get_items_for_feedback API TAT 3.4822 ms
+
+get_items_for_feedback API TAT 2.9122 ms
+
+logout API TAT 1.9812 ms
 
 
-<!-- Seller Client-Server integrations round-trip latency numbers -->
+<!-- Seller Client-Server integrations round-trip latency numbers when client is in local Machine and Server is in GCP in Milliseconds  -->
 
-Put item API TAT 13.156582999999996 ms
+Put item API TAT 13.1590 ms
 
-Update price API TAT 2.981207999999999 ms
+Update price API TAT 3.9812 ms
 
-Remove Items API TAT 2.3674169999999966 ms
+Remove Items API TAT 3.367 ms
 
-ProductDB STATE API TAT 3.1024579999999955 ms
+ProductDB STATE API TAT 3.10245 ms
 
-Display Item API TAT 1.1935000000000002 ms
+Display Item API TAT 3.19632 ms
+
+get_seller_feedback  API TAT  3.19632 ms
+
+create_user seller  API TAT 2.90662 ms
+
+login_user seller API TAT 3.479192 ms
+
+logout seller API TAT  2.2342 ms
+
