@@ -1,6 +1,6 @@
 System Design:
 
-<img width="611" alt="Screen Shot 2022-02-21 at 8 36 09 PM" src="https://user-images.githubusercontent.com/26001477/155058564-629b43a2-9b9e-4303-9fd2-5aaa85f18f77.png">
+<img width="626" alt="Screen Shot 2022-02-21 at 10 37 29 PM" src="https://user-images.githubusercontent.com/26001477/155069969-5123fb98-a5b2-4e90-965a-d5287af26904.png">
 
 
 The application consists of 6 components:
