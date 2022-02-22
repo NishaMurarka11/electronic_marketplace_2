@@ -180,6 +180,16 @@ class client_server():
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
 
+
+    @app.route('/api/getBuyerHistory', methods=['POST'])
+    def getBuyerHistory():
+        data = request.get_json()
+        buyer_id = data["buyer_id"]
+        code,trxns = PurchaseHelper.getBuyerHistory(buyer_id)
+        response = {'status_code' : code, 'message' : trxns}
+        response_pickled = jsonpickle.encode(response)
+        return Response(response=response_pickled, status=200, mimetype="application/json")
+ 
        
 if __name__=="__main__":
     print("Starting Buyer Server !!")

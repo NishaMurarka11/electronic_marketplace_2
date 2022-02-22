@@ -169,11 +169,9 @@ class inventory():
         self.initializeDB()
         data = json.loads(GRPCClient.get("trxnDB").replace("\'", "\""))
         trxns = data["trxns"]
-        trxns.append(trxn)
+        trxns = trxns+trxn
         data["trxns"] = trxns
         GRPCClient.set("trxnDB",  str(data))
-
-
 
     def getItemsForFeedback(self,buyer_id):
         self.initializeDB()
@@ -217,6 +215,21 @@ class inventory():
         # Rating in the for 4/5 where 4 is thumbs Up and 5 is total
         #  For thumbsUp down feedback value is 0
         return (SUCCESS_CODE,rating)
+
+
+    def getBuyerTransactions(self,buyer_id):
+        self.initializeDB()
+        data = json.loads(GRPCClient.get("trxnDB").replace("\'", "\""))
+        trxns = data["trxns"]
+        buyer_trxns = []
+        for trxn in trxns:
+            if trxn["buyer_id"] == buyer_id:
+                buyer_trxns.append(trxn)
+
+        return (SUCCESS_CODE, buyer_trxns)
+                
+
+
 
 
 

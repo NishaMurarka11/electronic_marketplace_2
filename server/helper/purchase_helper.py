@@ -101,13 +101,11 @@ class PurchaseHelper():
 		print("Feedback Succesfully Submitted")
 		return code,trxns
 
-
-
-
-
-
-
-
-
+	def getBuyerHistory(buyer_id):
+		product_db = inventory()
+		code, buyer_trxns = product_db.getBuyerTransactions(buyer_id)
+		print("Buyer trxns",buyer_trxns)
+		return code, buyer_trxns 
+		
 
 
