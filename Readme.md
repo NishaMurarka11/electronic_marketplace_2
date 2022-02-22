@@ -70,7 +70,7 @@ logout seller API TAT  42.2342 ms
 
 WORKING COMPONENTS:
 
-### Solar System Exploration, 1950s – 1960s
+### Client-side sellers interface
 - [x] Create an account: sets up username and password 
 - [x] Login: provide username and password 
 - [x] Logout 
@@ -79,4 +79,25 @@ WORKING COMPONENTS:
 - [x] Change the sale price of an item: provide item id and new sale price 
 - [x] Remove an item from sale: provide item id and quantity 
 - [x] Display items currently on sale put up by this seller
+
+### Client-side buyers interface 
+
+Create an account: sets up username and password 
+- [x] Login: provide username and password 
+- [x] Logout 
+- [x] Search items for sale: provide an item category and up to five keywords 
+- [x] Add item to the shopping cart: provide item id and quantity 
+- [x] Remove item from the shopping cart: provide item id and quantity 
+- [x] Clear the shopping cart 
+- [x] Display shopping cart 
+- [x] Make purchase: credit card details (name, number, expiration date) 
+- [x] Provide feedback: thumbs up or down for each item purchased, at most one feedback per purchased item 
+- [x] Get seller rating: provide buyer id 
+- [x] Get buyer history 
+- [x] Run all server components as separate instances in cloud.
+- [x] Implement a very  simple  prototype  of  this  component.  It  receives a request (user  name,  credit card  number)  and 
+returns Yes (95% probability) or No (5% probability). Use SOAP/WSDL to implement this service. 
+
+ 
+
 
