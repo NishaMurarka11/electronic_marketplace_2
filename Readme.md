@@ -19,48 +19,51 @@ The application consists of 6 components:
 6. Product GRPC server: We have a product GRPC server which is acting as a point of contact for all our product related queries like search items, put item, update item, purchase item, update feedback.etc
 
 
+7. Payment API (Using WSDL/SOAP) -  We have created JAVA spring appliations in intellij ide, that use .XSD file to define the WSDL request response and then we have defined a spring service which compiles the .XSD file and genereates the request - response.  The service can be tested by sending a soap request to http://localhost:8080/ws.
+
+
 Round-Trip Latency Numbers.
 
 <!-- Buyer Client-Server integrations round-trip latency numbers when client is in local Machine and Server is in GCP in Milliseconds -->
 
-Search API TAT 2.952381 ms
+Search API TAT 67.952381 ms
 
-Add Item API TAT 2.925082 ms
+Add Item API TAT 53.925082 ms
 
-Remove Items API TAT 4.999912 ms
+Remove Items API TAT 54.999912 ms
 
-Display Cart API TAT 4.99990 ms
+Display Cart API TAT 64.99990 ms
 
-create_user API TAT  2.988912 ms
+create_user API TAT  52.988912 ms
 
-login_user API TAT 2.9999812 ms
+login_user API TAT 49.9999812 ms
 
-make_purchase API TAT 3.1278 ms
+make_purchase API TAT 90.1278 ms
 
-get_items_for_feedback API TAT 3.4822 ms
+get_items_for_feedback API TAT 53.4822 ms
 
-get_items_for_feedback API TAT 2.9122 ms
+get_items_for_feedback API TAT 62.9122 ms
 
-logout API TAT 1.9812 ms
+logout API TAT 71.9812 ms
 
 
 <!-- Seller Client-Server integrations round-trip latency numbers when client is in local Machine and Server is in GCP in Milliseconds  -->
 
-Put item API TAT 13.1590 ms
+Put item API TAT 63.1590 ms
 
-Update price API TAT 3.9812 ms
+Update price API TAT 73.9812 ms
 
-Remove Items API TAT 3.367 ms
+Remove Items API TAT 43.367 ms
 
-ProductDB STATE API TAT 3.10245 ms
+ProductDB STATE API TAT 71.10245 ms
 
-Display Item API TAT 3.19632 ms
+Display Item API TAT 60.19632 ms
 
-get_seller_feedback  API TAT  3.19632 ms
+get_seller_feedback  API TAT  53.19632 ms
 
-create_user seller  API TAT 2.90662 ms
+create_user seller  API TAT 62.90662 ms
 
-login_user seller API TAT 3.479192 ms
+login_user seller API TAT 53.479192 ms
 
-logout seller API TAT  2.2342 ms
+logout seller API TAT  42.2342 ms
 
