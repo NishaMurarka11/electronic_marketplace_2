@@ -17,6 +17,11 @@ class inventory():
         if(response == "0"):
             data_instance = {'items':[]}
             GRPCClient.set("productDB",str(data_instance))
+        response = GRPCClient.exists("trxnDB")    
+        if(response=="0"):
+            data_instance = {'trxns':[]}
+            GRPCClient.set("trxnDB",str(data_instance))
+
             
     def get_item_id(self):
         print("get item called")
@@ -117,7 +122,7 @@ class inventory():
         
         
     def get_item_by_seller_id(self,seller_id):
-
+        self.initializeDB()
         data = json.loads(GRPCClient.get("productDB").replace("\'", "\""))
         item_lst = data["items"]
         item_by_seller = []
@@ -127,5 +132,99 @@ class inventory():
                 #print("Item found "+str(item))
                 item_by_seller.append(item)
         return (SUCCESS_CODE,item_by_seller)
+
+    def decrement_item_qty_by_itemId(self,itemId,quantity):
+        self.initializeDB()
+        data = json.loads(GRPCClient.get("productDB").replace("\'", "\""))
+        item_lst = data["items"]
+        item_by_id = []
+        for item in item_lst:
+            if item["item_id"] == itemId :
+                #print("Item found "+str(item))
+                item["quantity"] = item["quantity"] - quantity
+                item_by_id.append(item)
+                break
+        return (SUCCESS_CODE,item_by_id)
+
+    def diplayDB(self):
+        self.initializeDB()
+        data = json.loads(GRPCClient.get("productDB").replace("\'", "\""))
+        return data
+
+    def get_item_by_id(self, item_id):
+        self.initializeDB()
+        data = json.loads(GRPCClient.get("productDB").replace("\'", "\""))
+        item_lst = data["items"]
+        itemfound = {}
+        # item_lst = self.inv["items"]
+        for item in item_lst:
+            if item["item_id"] == item_id :
+                itemfound = item
+                return (SUCCESS_CODE,itemfound)
+
+        return (ERROR_CODE,itemfound)
+
+
+    def save_trxn(self,trxn):
+        self.initializeDB()
+        data = json.loads(GRPCClient.get("trxnDB").replace("\'", "\""))
+        trxns = data["trxns"]
+        trxns.append(trxn)
+        data["trxns"] = trxns
+        GRPCClient.set("trxnDB",  str(data))
+
+
+
+    def getItemsForFeedback(self,buyer_id):
+        self.initializeDB()
+        data = json.loads(GRPCClient.get("trxnDB").replace("\'", "\""))
+        trxns = data["trxns"]
+        feedback_trxns = []
+        for trxn in trxns:
+            if trxn["buyer_id"] == buyer_id and trxn["feedback"]=="-1":
+                feedback_trxns.append(trxn)
+
+        return (SUCCESS_CODE,feedback_trxns)
+
+    def postFeedback(self, buyer_id, item_id ,feedback):
+        self.initializeDB()
+        data = json.loads(GRPCClient.get("trxnDB").replace("\'", "\""))
+        trxns = data["trxns"]
+        feedback_trxns = []
+        for trxn in trxns:
+            if trxn["buyer_id"] == buyer_id and trxn["item_id"]==item_id:
+                trxn["feedback"] = str(feedback)
+
+        data["trxns"]  = trxns
+        GRPCClient.set("trxnDB",  str(data))
+        return (SUCCESS_CODE,trxns)
+
+
+    def getSellerOverallFeedback(self, seller_id):
+        self.initializeDB()
+        data = json.loads(GRPCClient.get("trxnDB").replace("\'", "\""))
+        trxns = data["trxns"]
+        feedback_trxns = []
+        total = 0
+        thumbsUp = 0
+        for trxn in trxns:
+            if trxn["seller_id"] == seller_id and trxn["feedback"]=="-1":
+                total = total+1
+                if trxn["feedback"]=="1":
+                    thumbsUp = thumbsUp +1 
+
+        rating = str(thumbsUp)+"/"+ str(total)                    
+        # Rating in the for 4/5 where 4 is thumbs Up and 5 is total
+        #  For thumbsUp down feedback value is 0
+        return (SUCCESS_CODE,rating)
+
+
+
+
+
+
+
+
+
 
     

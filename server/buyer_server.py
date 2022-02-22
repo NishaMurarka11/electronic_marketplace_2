@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import imp
+
 from unittest import result
 from flask import Flask, request, Response
 from product import inventory
@@ -9,6 +9,7 @@ import json
 import pickle
 import jsonpickle
 from user_database_login import user
+from helper.purchase_helper import PurchaseHelper
 
 error_code = -1
 success_code = 1
@@ -126,8 +127,60 @@ class client_server():
         response_pickled = jsonpickle.encode(response)
         return Response(response=response_pickled, status=200, mimetype="application/json")
 
-  
-  
+
+    """
+    /DOC
+    Make purchase API, get the cart items for a buyer_id, get the total payment amount 
+    for the cart items, and than calls the makePayment method. On success, the inventory is
+    updated by subtracting the purchased items.
+
+    """
+    @app.route('/api/makePurchase', methods=['POST'])
+    def make_purchase():
+        data = request.get_json()
+        buyer_id = data['buyer_id']
+        # Check for whether the user id logged in or not
+        if user.validate_user(buyer_id):
+            cart = shopping_cart.get_db_instance()
+            ret_code,result = cart.display_cart(buyer_id)
+
+            print("Proceed To checkout: Items: ",result)
+            paymentAmount = PurchaseHelper.getTotalPurchaseAmount(result)
+            payment_status = PurchaseHelper.make_payment(data)
+            print("Payment Status :{}".format(payment_status))
+            # if payment status is TRUE, update inventory
+            if(payment_status=="TRUE"):
+
+                PurchaseHelper.updateInventory(result)
+
+                trxns = PurchaseHelper.createTransaction(buyer_id,result)
+                print("Transactions created ",trxns)
+            # Log Transaction in Database
+            response = {'return_code' : ret_code,'message' : result}
+        else :
+            response = {'return_code' : error_code, 'message' : "Invalid Buyer Id"}
+        response_pickled = jsonpickle.encode(response)
+        return Response(response=response_pickled, status=200, mimetype="application/json")
+
+    @app.route('/api/getItemsForFeedback', methods=['GET'])
+    def getItemsForFeedback():
+        data = request.get_json()
+        buyer_id = data["buyer_id"]
+        code,data = PurchaseHelper.getItemsForFeedback(buyer_id)
+        response = {'status_code' : code, 'message' : data}
+        response_pickled = jsonpickle.encode(response)
+        return Response(response=response_pickled, status=200, mimetype="application/json")
+
+    @app.route('/api/postFeedback', methods=['POST'])
+    def postFeedback():
+        data = request.get_json()
+        buyer_id = data["buyer_id"]
+        code,trxns = PurchaseHelper.postFeedback(buyer_id, data["item_id"],data["feedback"] )
+        response = {'status_code' : code, 'message' : trxns}
+        response_pickled = jsonpickle.encode(response)
+        return Response(response=response_pickled, status=200, mimetype="application/json")
+
+       
 if __name__=="__main__":
     print("Starting Buyer Server !!")
     c = client_server()
