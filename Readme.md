@@ -68,7 +68,7 @@ login_user seller API TAT 53.479192 ms
 logout seller API TAT  42.2342 ms
 
 
-#WORKING COMPONENTS:
+# WORKING COMPONENTS:
 
 ### Client-side sellers interface
 - [x] Create an account: sets up username and password 
