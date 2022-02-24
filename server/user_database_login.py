@@ -1,22 +1,24 @@
 #!/usr/bin/python3
 import json
 import pickle
+import os
 from grpc_client import  GRPCClient
 import traceback
 
 error_code = -1
+customerdb = os.getenv("customerdb") or "localhost"
 class user():
     
     def create_user(user_name, password):
         try :
-            exists = GRPCClient.exists(user_name)   
+            exists = GRPCClient.exists(customerdb,user_name)   
             if exists == "0":
-                user_id = GRPCClient.get("User_ID")
+                user_id = GRPCClient.get(customerdb,"User_ID")
                 print("user_id ", user_id)
                 data = {'user_id' : user_id , 'password' :password}
-                GRPCClient.set(user_name,str(data))
+                GRPCClient.set(customerdb,user_name,str(data))
                 val = int(user_id) + 1
-                GRPCClient.set("User_ID", str(val))
+                GRPCClient.set(customerdb,"User_ID", str(val))
                 return (user_id,"Ok")
             else :
                 return (error_code,"Username already exists")
@@ -26,16 +28,16 @@ class user():
         
     def login_user(user_name, password):
         try :
-            exists = GRPCClient.exists(user_name)
+            exists = GRPCClient.exists(customerdb,user_name)
             if exists == "0":
                 return "No such user"
             else :
-                val = GRPCClient.get(user_name)
+                val = GRPCClient.get(customerdb,user_name)
                 val = val.replace("\'", "\"")
                 val = json.loads(val)
                 print(val)
                 if val['password'] == password:
-                    GRPCClient.set(val['user_id'],"True")
+                    GRPCClient.set(customerdb,val['user_id'],"True")
                     return (val['user_id'],"Ok")
                 else :
                     return (error_code,"Incorrect Password")
@@ -45,9 +47,9 @@ class user():
         
     def logout(user_id):
         try:
-            exists = GRPCClient.exists(user_id)
+            exists = GRPCClient.exists(customerdb,user_id)
             if exists == "1":
-                GRPCClient.delete(user_id)
+                GRPCClient.delete(customerdb,user_id)
                 return (user_id,"Ok")
             else:
                 return (error_code,"no such user")
@@ -56,7 +58,7 @@ class user():
     
     def validate_user(user_id):
         try:
-            exists = GRPCClient.exists(user_id)
+            exists = GRPCClient.exists(customerdb,user_id)
             if exists == "0":
                 return False
             else :
@@ -65,4 +67,4 @@ class user():
             print (str(e))
             return False
         
-                    
+        

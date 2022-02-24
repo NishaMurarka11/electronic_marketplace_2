@@ -17,7 +17,7 @@ app = Flask(__name__)
 class client_server():
     
     def __init__(self):
-        host='127.0.0.1'
+        host='0.0.0.0'
         port=1500
         app.run(host=host, port=port, debug=True)
         
@@ -139,6 +139,7 @@ class client_server():
     def make_purchase():
         data = request.get_json()
         buyer_id = data['buyer_id']
+        card_details = data['card_details']
         # Check for whether the user id logged in or not
         if user.validate_user(buyer_id):
             cart = shopping_cart.get_db_instance()
@@ -146,7 +147,7 @@ class client_server():
 
             print("Proceed To checkout: Items: ",result)
             paymentAmount = PurchaseHelper.getTotalPurchaseAmount(result)
-            payment_status = PurchaseHelper.make_payment(data)
+            payment_status = PurchaseHelper.make_payment(card_details)
             print("Payment Status :{}".format(payment_status))
             # if payment status is TRUE, update inventory
             if(payment_status=="TRUE"):

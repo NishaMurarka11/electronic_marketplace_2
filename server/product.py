@@ -4,23 +4,26 @@ import pickle
 import traceback
 import grpc_client
 from grpc_client import GRPCClient
+import os
 
 SUCCESS_CODE = 1
 ERROR_CODE = -1
+
+productdb = os.getenv("productdb") or "localhost"
 class inventory():
     item_id = 0
     def __init__(self) -> None:
         pass    
 
     def initializeDB(self):
-        response = GRPCClient.exists("productDB")
+        response = GRPCClient.exists(productdb,"productDB")
         if(response == "0"):
             data_instance = {'items':[]}
-            GRPCClient.set("productDB",str(data_instance))
-        response = GRPCClient.exists("trxnDB")    
+            GRPCClient.set(productdb,"productDB",str(data_instance))
+        response = GRPCClient.exists(productdb,"trxnDB")    
         if(response=="0"):
             data_instance = {'trxns':[]}
-            GRPCClient.set("trxnDB",str(data_instance))
+            GRPCClient.set(productdb,"trxnDB",str(data_instance))
 
             
     def get_item_id(self):
@@ -34,7 +37,7 @@ class inventory():
         self.initializeDB()   
         # check if item is already there. 
         item_ids = []
-        data  =  GRPCClient.get("productDB")
+        data  =  GRPCClient.get(productdb,"productDB")
         data = data.replace("\'", "\"")
         data = json.loads(data)
         # data = pickle.loads(inventory.__instance.redisDB.get("productDB"))
@@ -68,14 +71,14 @@ class inventory():
             return (ERROR_CODE, str(err))
 
         data['items'] = item_lst
-        GRPCClient.set("productDB",  str(data))
+        GRPCClient.set(productdb,"productDB",  str(data))
         return (SUCCESS_CODE,item_ids)
 
 
     
     def search_item(self,category_id,keyword):
         self.initializeDB()
-        data = GRPCClient.get("productDB")
+        data = GRPCClient.get(productdb,"productDB")
         data = data.replace("\'", "\"")
         data = json.loads(data)
         item_lst = data["items"]
@@ -101,7 +104,7 @@ class inventory():
     def update_item(self,item_id,key,value):
         self.initializeDB()
         print("Update Item")
-        data = json.loads(GRPCClient.get("productDB").replace("\'", "\""))
+        data = json.loads(GRPCClient.get(productdb,"productDB").replace("\'", "\""))
         print("data",data)
         item_lst = data['items']
         print("*****DB before update", item_lst)
@@ -113,7 +116,7 @@ class inventory():
                 break
         if flag == 1:
             data["items"] = item_lst
-            GRPCClient.set("productDB", str(data))
+            GRPCClient.set(productdb,"productDB", str(data))
             print("****DB After update", item_lst)
             ret = "Updated "+str(item_id)+" "+str(key)+" to "+str(value)
             return (SUCCESS_CODE,ret)
@@ -123,7 +126,7 @@ class inventory():
         
     def get_item_by_seller_id(self,seller_id):
         self.initializeDB()
-        data = json.loads(GRPCClient.get("productDB").replace("\'", "\""))
+        data = json.loads(GRPCClient.get(productdb,"productDB").replace("\'", "\""))
         item_lst = data["items"]
         item_by_seller = []
         # item_lst = self.inv["items"]
@@ -135,7 +138,7 @@ class inventory():
 
     def decrement_item_qty_by_itemId(self,itemId,quantity):
         self.initializeDB()
-        data = json.loads(GRPCClient.get("productDB").replace("\'", "\""))
+        data = json.loads(GRPCClient.get(productdb,"productDB").replace("\'", "\""))
         item_lst = data["items"]
         item_by_id = []
         for item in item_lst:
@@ -148,12 +151,12 @@ class inventory():
 
     def diplayDB(self):
         self.initializeDB()
-        data = json.loads(GRPCClient.get("productDB").replace("\'", "\""))
+        data = json.loads(GRPCClient.get(productdb,"productDB").replace("\'", "\""))
         return data
 
     def get_item_by_id(self, item_id):
         self.initializeDB()
-        data = json.loads(GRPCClient.get("productDB").replace("\'", "\""))
+        data = json.loads(GRPCClient.get(productdb,"productDB").replace("\'", "\""))
         item_lst = data["items"]
         itemfound = {}
         # item_lst = self.inv["items"]
@@ -167,15 +170,15 @@ class inventory():
 
     def save_trxn(self,trxn):
         self.initializeDB()
-        data = json.loads(GRPCClient.get("trxnDB").replace("\'", "\""))
+        data = json.loads(GRPCClient.get(productdb,"trxnDB").replace("\'", "\""))
         trxns = data["trxns"]
         trxns = trxns+trxn
         data["trxns"] = trxns
-        GRPCClient.set("trxnDB",  str(data))
+        GRPCClient.set(productdb,"trxnDB",  str(data))
 
     def getItemsForFeedback(self,buyer_id):
         self.initializeDB()
-        data = json.loads(GRPCClient.get("trxnDB").replace("\'", "\""))
+        data = json.loads(GRPCClient.get(productdb,"trxnDB").replace("\'", "\""))
         trxns = data["trxns"]
         feedback_trxns = []
         for trxn in trxns:
@@ -186,7 +189,7 @@ class inventory():
 
     def postFeedback(self, buyer_id, item_id ,feedback):
         self.initializeDB()
-        data = json.loads(GRPCClient.get("trxnDB").replace("\'", "\""))
+        data = json.loads(GRPCClient.get(productdb,"trxnDB").replace("\'", "\""))
         trxns = data["trxns"]
         feedback_trxns = []
         for trxn in trxns:
@@ -194,13 +197,13 @@ class inventory():
                 trxn["feedback"] = str(feedback)
 
         data["trxns"]  = trxns
-        GRPCClient.set("trxnDB",  str(data))
+        GRPCClient.set(productdb,"trxnDB",  str(data))
         return (SUCCESS_CODE,trxns)
 
 
     def getSellerOverallFeedback(self, seller_id):
         self.initializeDB()
-        data = json.loads(GRPCClient.get("trxnDB").replace("\'", "\""))
+        data = json.loads(GRPCClient.get(productdb,"trxnDB").replace("\'", "\""))
         trxns = data["trxns"]
         feedback_trxns = []
         total = 0
@@ -219,7 +222,7 @@ class inventory():
 
     def getBuyerTransactions(self,buyer_id):
         self.initializeDB()
-        data = json.loads(GRPCClient.get("trxnDB").replace("\'", "\""))
+        data = json.loads(GRPCClient.get(productdb,"trxnDB").replace("\'", "\""))
         trxns = data["trxns"]
         buyer_trxns = []
         for trxn in trxns:

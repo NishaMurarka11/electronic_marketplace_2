@@ -1,0 +1,3 @@
+#!/bin/sh
+export productdb=10.128.0.45
+export customerdb=10.128.0.47

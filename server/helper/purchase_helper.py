@@ -2,6 +2,7 @@
 from product import inventory
 from unittest import result
 import requests
+import xml.etree.ElementTree as ET
 """
 This class acts as a helper class for
 
@@ -33,27 +34,29 @@ class PurchaseHelper():
 
 
 	def make_payment(data):
-		print("Data",data)
-		name = data["name"]
+		name = data['name']
 		card_number = data["card_number"]
 		expiration_date = data["expiration_date"]
-		url = "http://localhost:8080/ws"
+		url = "http://b564-2601-281-8080-2ef0-4cfd-ef63-fee8-4002.ngrok.io/ws"
 		xml = """<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
 				  xmlns:gs="http://spring.io/guides/gs-producing-web-service">
     				<soapenv:Header/>
 					<soapenv:Body>
 						<gs:transactionRequest>
-							<gs:name>{name}</gs:name>
-							<gs:cardNumber>{card_number}
-							</gs:cardNumber>
-							<gs:expiryDate>{expiry_date}
-							</gs:expiryDate>
+							<gs:name>{}</gs:name>
+							<gs:cardNumber>{}</gs:cardNumber>
+                                                        <gs:expiryDate>{}</gs:expiryDate>
 						</gs:transactionRequest>
 					</soapenv:Body>
 				</soapenv:Envelope>"""
-		headers = {'Content-Type': 'application/xml'}
-		response = requests.post(url, data=xml.format(name,card_number,expiration_date), headers=headers)
-		return response.text
+		headers = {'Content-Type': 'text/xml'}
+		data=xml.format(name,card_number,expiration_date)
+		response = requests.post(url, data=data, headers=headers)
+		responseXml = str(response.text)
+		if responseXml.find('TRUE'):
+                    return True
+		return False
+
 
 
 	def updateInventory(data):

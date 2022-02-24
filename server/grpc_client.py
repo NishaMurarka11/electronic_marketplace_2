@@ -3,22 +3,26 @@ import database_pb2
 import database_pb2_grpc
 import traceback
 
+
 class GRPCClient():
     
-    def exists(key):
+    def exists(server,key):
         try :
-            with grpc.insecure_channel('localhost:50051') as channel:
+            url = '{}:50051'.format(server)
+            with grpc.insecure_channel(url) as channel:
                 stub = database_pb2_grpc.redisOperationsStub(channel)
                 data = database_pb2.Request(message=key)
                 response = stub.exists(data)
                 return response.message        
         except Exception as e:
+            print("EXCEPTION"+str(e))
             return ("Error has occured "+str(e))
         
         
-    def set(key,value):
+    def set(server,key,value):
         try :
-            with grpc.insecure_channel('localhost:50051') as channel:
+            url = '{}:50051'.format(server)
+            with grpc.insecure_channel(url) as channel:
                 stub = database_pb2_grpc.redisOperationsStub(channel)
                 data = database_pb2.Request(message=key,val=value)
                 response = stub.set(data)
@@ -27,9 +31,10 @@ class GRPCClient():
             traceback.print_exc()
             return ("Error has occured "+str(e))
         
-    def get(key):
+    def get(server,key):
         try :
-            with grpc.insecure_channel('localhost:50051') as channel:
+            url = '{}:50051'.format(server)
+            with grpc.insecure_channel(url) as channel:
                 stub = database_pb2_grpc.redisOperationsStub(channel)
                 data = database_pb2.Request(message=key)
                 response = stub.get(data)
@@ -37,9 +42,10 @@ class GRPCClient():
         except Exception as e:
             return ("Error has occured "+str(e))
         
-    def delete(key):
+    def delete(sever,key):
         try :
-            with grpc.insecure_channel('localhost:50051') as channel:
+            url = '{}:50051'.format(server)
+            with grpc.insecure_channel(url) as channel:
                 stub = database_pb2_grpc.redisOperationsStub(channel)
                 data = database_pb2.Request(message=key)
                 response = stub.delete(data)
