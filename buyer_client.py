@@ -6,10 +6,11 @@ from subprocess import call
 from unicodedata import category 
 import pickle
 import time
+import os
 
 
 
-HOST = '127.0.0.1'  # The server's hostname or IP address
+HOST = os.getenv("buyerServer") or "localhost"  # The server's hostname or IP address
 PORT = 1500      # The port used by the server
 addr = f"http://{HOST}:{PORT}"
 
@@ -58,7 +59,7 @@ def display_cart(buyer_id):
 
 def make_purchase(buyer_id,data):
     print("making purchase for buyer_id",buyer_id)
-    data = {'buyer_id':buyer_id, 'data':data}
+    data = {'buyer_id':buyer_id, 'card_details':data}
     url = addr+"/api/makePurchase"
     return call_buyer_sever(data,"post",url)
 
@@ -110,25 +111,25 @@ Inside main we have defined several test cases for testing out several buyer tes
 """
 def main():
 
-    # response = create_user("sachin","test")
+    response = create_user("sachin","test")
     response = login_user("sachin","test")
     
     buyer_id = response['buyer_id']
     items = search_item(0,["stationary","Pen"])
     
     print(add_item_to_cart(buyer_id,0,"1"))
-    data  = {'buyer_id':buyer_id,'Name':'sachin','card_number':'4032678965432201' , 'expiration_date':'02022025'}
+    data  = {'buyer_id':buyer_id,'name':'sachin','card_number':'4032678965432201' , 'expiration_date':'02022025'}
     make_purchase(buyer_id,data)
 
-    # print(remove_item(buyer_id,0,"2"))
+    print(remove_item(buyer_id,0,"2"))
 
-    # print(display_cart(buyer_id))
+    print(display_cart(buyer_id))
 
-    # print(clear_cart(buyer_id))
+    print(clear_cart(buyer_id))
     
-    # print(logout(buyer_id))
     get_items_for_feedback(buyer_id)
     get_buyer_history(buyer_id)
+    print(logout(buyer_id))
 
 
 
