@@ -75,7 +75,7 @@ def call_seller_sever(data,operation,url):
     
 def main():
     
-    #response = create_user("nisha","test")
+    response = create_user("nisha","test")
     
     response = login_user("nisha","test")
     
